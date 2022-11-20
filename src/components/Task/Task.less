@@ -1,0 +1,28 @@
+// main: ../../index.less
+
+.task {
+    display: flex;
+    justify-content: space-between;
+    height: fit-content;
+    width: 100%;
+    border: @border;
+    &_outdated {
+        background: @outdated;
+    }
+    &_fulfilled {
+        background: @fulfilled;
+    }
+}
+
+.task__title {
+    color: @text-light;
+}
+
+.task__date {
+    color: @text-light;
+}
+
+.task__buttons {
+    display: flex;
+    gap: 20px;
+}

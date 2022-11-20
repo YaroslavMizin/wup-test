@@ -1,0 +1,30 @@
+// main: ../../index.less
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(0,0,0, 0.5);
+    &_active {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}
+
+.modal__content:extend(.flex-column) {
+    justify-content: center;
+    align-items: center;
+    width: 400px;
+    height: fit-content;
+    background-color: @main;
+    padding: 15px;
+}
+
+.modal__title {
+    text-transform: @text-upper;
+    color: @text-light;
+}

@@ -1,0 +1,21 @@
+// main: ../index.less
+
+.tasks {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    margin: 50px auto;
+    width: 100%;
+    &_fulfilled {
+        background-color: @fulfilled;
+    }
+    &_outdated {
+        background-color: @outdated;
+    }
+}
+
+.tasks__header {
+    text-align: center;
+    text-transform: @text-upper;
+}
