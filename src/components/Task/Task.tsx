@@ -36,7 +36,7 @@ const Task: FC<TaskProps> = ({ task, onChange, onSubmit }) => {
 
     /** коллбэк изменения полей задачи, сама функция внутри, сверху */
     const updateTask = async () => {
-        await onSubmit(task.id);
+        await onSubmit(task.id as string);
         setModal(false);
     }
 

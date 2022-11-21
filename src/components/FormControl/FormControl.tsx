@@ -29,7 +29,6 @@ const FormControl: FC<FormControlProps> = ({
     value,
     defaultValue,
     disabled,
-    children,
     multiple,
     onChange
 }) => {
@@ -38,7 +37,8 @@ const FormControl: FC<FormControlProps> = ({
             <label className='control__label'>{name}</label>
             {type === 'textarea' ?
                 <textarea
-                    defaultValue={defaultValue}
+                    defaultValue={value? undefined : defaultValue}
+                    value={defaultValue? undefined : value}
                     className='control__input control__input_textarea'
                     onChange={(e) => onChange(action, e.currentTarget.value)}
                     placeholder={placeholder}
@@ -46,8 +46,8 @@ const FormControl: FC<FormControlProps> = ({
                 :
                 <input
                     disabled={disabled}
-                    defaultValue={defaultValue}
-                    value={value}
+                    defaultValue={value? undefined : defaultValue}
+                    value={defaultValue? undefined : value}
                     className='control__input'
                     onChange={(e) => onChange(action, type === 'file'?
                     e.currentTarget.files : e.currentTarget.value)}

@@ -8,9 +8,9 @@ interface file {
 export interface task {
     title: string;
     details: string;
-    date: number;
-    files: file[];
+    date: string;
+    files?: file[];
     readonly createdAt?: string;
     fulfilled?: string;
-    readonly id: string;
+    readonly id?: string;
 }

@@ -3,7 +3,11 @@ import {useState} from 'react';
 import { task } from "../types/task";
 
 export const useForm = (): [formFields[], task, File, (action: any, payload: any) => void, () => void, () => void] => {
-    const [task, setTask] = useState({} as task);
+    const [task, setTask] = useState({
+        title: '',
+        details: '',
+        date: '',
+    } as task);
     const [file, setFile] = useState<File>({} as File);
 
     const taskFields: formFields[] = [
@@ -23,7 +27,7 @@ export const useForm = (): [formFields[], task, File, (action: any, payload: any
     }
 
     const clearTask = () => {
-        setTask({} as task);
+        setTask({...task, title: '', details: '', date: ''});
     }
 
     const clearFile = () => {

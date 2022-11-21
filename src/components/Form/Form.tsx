@@ -1,4 +1,5 @@
 import React, { FC, ReactNode } from 'react';
+import { useForm } from '../../hooks/useForm';
 import { formFields } from '../../utils/formFields';
 import Button from '../Button/Button';
 import FormControl from '../FormControl/FormControl';
@@ -17,10 +18,12 @@ interface FormProps {
  * @param5 onSubmit - для сабмита
  */
 const Form: FC<FormProps> = ({ fields, children, type, onChange, onSubmit }) => {
+    const [,,,,clearForm,] = useForm()
 
     const handleSubmit = (e: React.SyntheticEvent) => {
         e.preventDefault();
         onSubmit();
+        clearForm();
     }
 
     return (
