@@ -78,6 +78,7 @@ const Tasks = () => {
                 ...task,
                 createdAt: dayjs(Date.now()).format('DD.MM.YYYY HH:mm'),
                 fulfilled: false,
+                files: [],
             });
         /** копируем ID в поле задачи из наименования документа */
         await updateDoc(doc(db, 'tasks', newTask.id), {
@@ -98,7 +99,7 @@ const Tasks = () => {
             <h1 className='tasks__header'>
                 Задачи
             </h1>
-            <Button onClick={changeModal}>Добавить задачу</Button>
+            <Button onClick={() => setModal(true)}>Добавить задачу</Button>
             <Tasklist>
                 {loading ? <Loader /> : tasks && tasks.map(task =>
                     <Task
@@ -107,7 +108,7 @@ const Tasks = () => {
                         key={task.title}
                         task={task as task} />)}
             </Tasklist>
-            <Modal visible={modal} setVisible={changeModal} title='создание'>
+            <Modal visible={modal} setVisible={() => setModal(false)} title='создание'>
                 <Form onSubmit={addTask} fields={newTaskFields} onChange={setTask} type='новая задача' />
             </Modal>
         </main>
