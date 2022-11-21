@@ -1,7 +1,7 @@
 import React, { FC, ReactNode } from 'react';
 
 interface ButtonProps {
-    onClick: () => void;
+    onClick: () => (void | Promise<void>);
     children: ReactNode;
     small?: boolean;
     danger?: boolean;
@@ -10,6 +10,9 @@ interface ButtonProps {
 
 const Button: FC<ButtonProps> = ({ onClick, children, small, danger, type }) => {
 
+    /**
+     * подстановка классов по пропсам
+     */
     const rootClass: string[] = ['btn'];
     if (small) {
         rootClass.push(`btn_small`);

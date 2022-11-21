@@ -1,18 +1,64 @@
-import React, { FC } from 'react';
+import React, { FC, useContext, useState } from 'react';
 import { task } from '../../types/task';
 import Button from '../Button/Button';
+import Modal from '../Modal/Modal';
+import Form from '../Form/Form';
+import FormControl from '../FormControl/FormControl';
+import { Context } from '../../App';
+import { doc, deleteDoc, updateDoc } from 'firebase/firestore';
+import { useDocumentData } from 'react-firebase-hooks/firestore';
+import { returnField, returnName, returnType, returnValue } from '../../utils/formFields'
+import dayjs from 'dayjs';
+import CheckMark from '../CheckMark/CheckMark';
 
 interface TaskProps {
     task: task;
-    remove: () => void;
-    edit: () => void;
+    onChange: (action: any, payload: any) => void | Promise<void>;
+    onSubmit: (id: string) => void | Promise<void>;
 }
+/**
+* @param1 пропсы туду
+* @param2 onChange
+* @param3 onSubmit - для формы внутри
+* @returns - сам компонент задачи, к нему модальное окно с формой для редактирования,
+т.к. данные документа получаются отсюда по id
+*/
+const Task: FC<TaskProps> = ({ task, onChange, onSubmit }) => {
 
-const Task: FC<TaskProps> = ({ task, edit, remove }) => {
+    /** БД из контекста */
+    const { db } = useContext(Context);
+
+    /** локальный стейт модалки */
+    const [modal, setModal] = useState(false);
+
+    /** дата задачи с БД по ID из пропсов */
+    const [document, loading] = useDocumentData(doc(db, 'tasks', `${task.id}`));;
+
+    /**коллбэк для модального окна */
+    const changeModal = () => {
+        modal ? setModal(false) : setModal(true);
+    }
+
+    /** коллбэк изменения полей задачи, сама функция внутри, сверху */
+    const updateTask = () => {
+        onSubmit(task.id);
+        changeModal();
+    }
+
+    /** коллбэк удаления*/
+    const deleteTask = async () => {
+        await deleteDoc(doc(db, 'tasks', `${task.id}`));
+    }
+
+    /** переключение флажка выполнения отдельно, потому что вне модалки*/
+    const completeTask = async (value: boolean) => {
+        await updateDoc(doc(db, 'tasks', `${task.id}`), { fulfilled: value ? false : true });
+    }
 
     const rootClass = ['task'];
-    
-    if (task.outdated) {
+    const outdated = dayjs(document?.date).valueOf() - Date.now() < 0;
+
+    if (outdated) {
         rootClass.push('task_outdated')
     }
 
@@ -20,17 +66,42 @@ const Task: FC<TaskProps> = ({ task, edit, remove }) => {
         rootClass.push('task_fulfilled')
     }
 
+    /** массив ключей и значений для рендеринга массива children из компонентов*/
+    const fields = document && Object.entries(document).sort((a, b) => b[0].localeCompare(a[0]));
+
     return (
         <div className={rootClass.join(' ')}>
             <div>
                 <p className='task__title'>{task.title}</p>
-                <p className='task__details'>Дедлайн: {task.date}</p>
                 <p className='task__details'>Создано: {task.createdAt}</p>
+                <p className='task__details'>Дедлайн: {dayjs(task.date).format('DD.MM.YYYY')}</p>
             </div>
             <div className='task__buttons'>
-                <Button small onClick={edit}>подробно</Button>
-                <Button small danger onClick={remove}>удалить</Button>
+                <CheckMark fulfilled={document?.fulfilled} onClick={() => completeTask(document?.fulfilled)} />
+                <Button small onClick={changeModal}>подробно</Button>
+                <Button small danger onClick={deleteTask}>удалить</Button>
             </div>
+            <Modal loading={loading} visible={modal} setVisible={changeModal} title='редактирование'>
+                <Form onSubmit={updateTask} onChange={() => { }} type='изменить'>
+                    {fields?.map(field =>
+                        returnField(field[0]) &&
+                        <FormControl
+                            key={field[0]}
+                            action={field[0]}
+                            name={returnName(field[0])}
+                            required={false}
+                            type={returnType(field[0])}
+                            value={returnValue(field[0], field[1])}
+                            onChange={onChange} />
+                    )}
+                    {task.files &&
+                        <div className='form__control'>
+                            <label className='control__label'>Файлы</label>
+                            {task.files.map(file =>
+                                <a key={file.file} href={file.file} download>{file.filename}</a>)}
+                        </div>}
+                </Form>
+            </Modal>
         </div>
     );
 };

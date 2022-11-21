@@ -1,12 +1,16 @@
-export interface newTask {
-    title: string;
-    details: string;
-    date: string;
-    file?: File;
-    readonly createdAt?: string;
+/** типизация файла*/
+interface file {
+    filename: string;
+    file: string;
 }
 
-export interface task extends newTask {
-    fulfilled?: boolean;
-    outdated?: boolean;
+/** интерфейс туду */
+export interface task {
+    title: string;
+    details: string;
+    date: number;
+    files: file[];
+    readonly createdAt?: string;
+    fulfilled?: string;
+    readonly id: string;
 }

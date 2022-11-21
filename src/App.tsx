@@ -1,9 +1,8 @@
-import React, { createContext, useReducer } from 'react';
+import React, { createContext } from 'react';
 import Tasks from './pages/Tasks';
 import { initializeApp } from 'firebase/app';
 import { Firestore, getFirestore } from 'firebase/firestore';
-import { newTaskReducer } from './reducers/taskReducer/taskReducer';
-import { newTask } from './types/task';
+import { getStorage, FirebaseStorage } from 'firebase/storage';
 
 const app = initializeApp({
   apiKey: "AIzaSyDPFnHPlchykxxB_mJPN-H52BW01P5QHpE",
@@ -14,15 +13,21 @@ const app = initializeApp({
   appId: "1:431223591045:web:8f6e09bbd5a641c00b19ec"
 });
 
-export const Context = createContext({} as {db: Firestore});
+/** подключение firebase */
+export const Context = createContext({} as {
+  db: Firestore,
+  storage: FirebaseStorage,
+});
 
 function App() {
 
   const db = getFirestore(app);
+  const storage = getStorage(app);
 
   return (
     <Context.Provider value={{
       db: db,
+      storage: storage,
     }}>
       <Tasks />
     </Context.Provider>
