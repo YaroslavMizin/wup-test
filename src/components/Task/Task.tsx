@@ -34,15 +34,10 @@ const Task: FC<TaskProps> = ({ task, onChange, onSubmit }) => {
     /** дата задачи с БД по ID из пропсов */
     const [document, loading] = useDocumentData(doc(db, 'tasks', `${task.id}`));;
 
-    /**коллбэк для модального окна */
-    const changeModal = () => {
-        modal ? setModal(false) : setModal(true);
-    }
-
     /** коллбэк изменения полей задачи, сама функция внутри, сверху */
-    const updateTask = () => {
-        onSubmit(task.id);
-        changeModal();
+    const updateTask = async () => {
+        await onSubmit(task.id);
+        setModal(false);
     }
 
     /** коллбэк удаления*/
@@ -78,10 +73,10 @@ const Task: FC<TaskProps> = ({ task, onChange, onSubmit }) => {
             </div>
             <div className='task__buttons'>
                 <CheckMark fulfilled={document?.fulfilled} onClick={() => completeTask(document?.fulfilled)} />
-                <Button small onClick={changeModal}>подробно</Button>
+                <Button small onClick={() => setModal(true)}>подробно</Button>
                 <Button small danger onClick={deleteTask}>удалить</Button>
             </div>
-            <Modal loading={loading} visible={modal} setVisible={changeModal} title='редактирование'>
+            <Modal loading={loading} visible={modal} setVisible={() => setModal(false)} title='редактирование'>
                 <Form onSubmit={updateTask} onChange={() => { }} type='изменить'>
                     {fields?.map(field =>
                         returnField(field[0]) &&

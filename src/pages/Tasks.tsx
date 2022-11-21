@@ -23,10 +23,6 @@ const Tasks = () => {
     const [file, setFile] = useState<File>({} as File);
     /** локальный стейт модального окна новой задачи */
     const [modal, setModal] = useState(false);
-    /** переключение модалки */
-    const changeModal = () => {
-        modal ? setModal(false) : setModal(true);
-    }
     /** коллекция задач */
     const [tasks, loading] = useCollectionData(query(collection(db, 'tasks'), orderBy('createdAt')));
 
@@ -63,7 +59,7 @@ const Tasks = () => {
                 /** очистка стейта */
                 setNewTask({} as task);
                 /** закрытие модалки */
-                changeModal();
+                setModal(false);
             } catch (error) {
                 console.log(error);
             }
