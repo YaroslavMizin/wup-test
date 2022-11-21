@@ -8,6 +8,7 @@ export interface formFields {
     required: boolean;
     multiple?: boolean;
     action: string;
+    value?: string | number | undefined
 }
 
 /**массив с полями для рендеринга инпутов внутри формы*/

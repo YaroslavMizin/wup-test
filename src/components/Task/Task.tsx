@@ -86,7 +86,7 @@ const Task: FC<TaskProps> = ({ task, onChange, onSubmit }) => {
                             name={returnName(field[0])}
                             required={false}
                             type={returnType(field[0])}
-                            value={returnValue(field[0], field[1])}
+                            defaultValue={returnValue(field[0], field[1])}
                             onChange={onChange} />
                     )}
                     {task.files &&

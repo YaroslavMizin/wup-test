@@ -10,36 +10,19 @@ import Tasklist from '../components/Tasklist/Tasklist';
 import Loader from '../components/Loader/Loader';
 import Task from '../components/Task/Task';
 import { task } from '../types/task';
-import { newTaskFields } from '../utils/formFields';
 import dayjs from 'dayjs';
+import { useForm } from '../hooks/useForm';
 
 /** единственная страница приложения */
 const Tasks = () => {
     /** БД и сторэдж из контекста*/
     const { db, storage } = useContext(Context);
-    /** верхний стейт задачи*/
-    const [task, setNewTask] = useState({} as task);
-    /** файл отдельно для функции загрузки*/
-    const [file, setFile] = useState<File>({} as File);
+    /** кастомный хук управления состоянием */
+    const [taskFields, task, file, setTask, clearTask, clearFile] = useForm();
     /** локальный стейт модального окна новой задачи */
     const [modal, setModal] = useState(false);
     /** коллекция задач */
     const [tasks, loading] = useCollectionData(query(collection(db, 'tasks'), orderBy('createdAt')));
-
-    /**
-     * добавление задачи/файла в стейт,
-     * @param1 action ключ инпута для определения действия - время в формат, файл в отельный стейт
-     * @param2 payload - значение инпута или файлы инпута
-     *  */
-    const setTask = (action: any, payload: any) => {
-        if (action === 'files') {
-            setFile(payload[0]);
-        } else if (action === 'date') {
-            setNewTask({ ...task, [action]: dayjs(payload).valueOf() })
-        } else {
-            setNewTask({ ...task, [action]: payload });
-        }
-    }
 
     /** добавления файла в сторэдж по ID задачи, проверка на наличие файла здесь */
     const addFile = async (id: string) => {
@@ -57,7 +40,7 @@ const Tasks = () => {
                     })
                 });
                 /** очистка стейта */
-                setNewTask({} as task);
+                clearFile();
                 /** закрытие модалки */
                 setModal(false);
             } catch (error) {
@@ -82,6 +65,8 @@ const Tasks = () => {
         })
         /** добавление файла в сторэдж (функция выше) */
         addFile(newTask.id);
+        clearTask();
+        setModal(false);
     }
 
     /** обавление задачи в БД */
@@ -105,7 +90,7 @@ const Tasks = () => {
                         task={task as task} />)}
             </Tasklist>
             <Modal visible={modal} setVisible={() => setModal(false)} title='создание'>
-                <Form onSubmit={addTask} fields={newTaskFields} onChange={setTask} type='новая задача' />
+                <Form onSubmit={addTask} fields={taskFields} onChange={setTask} type='новая задача' />
             </Modal>
         </main>
     );

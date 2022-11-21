@@ -8,6 +8,7 @@ interface FormControlProps {
     required: boolean;
     onChange: (action: string, payload: any) => void;
     value?: string | number;
+    defaultValue?: string | number;
     action: string;
     children?: ReactNode;
     multiple?: boolean;
@@ -26,29 +27,18 @@ const FormControl: FC<FormControlProps> = ({
     placeholder,
     required,
     value,
+    defaultValue,
     disabled,
     children,
     multiple,
     onChange
 }) => {
-    if (type === 'select') {
-        return (
-            <div className='form__control' key={name}>
-                <label className='control__label'>{name}</label>
-                <select
-                    defaultValue={value}
-                    onChange={(e) => onChange(action, e.currentTarget.value)}
-                    className='control__input'>
-                    {children}
-                </select>
-            </div>)
-    }
     return (
         <div className='form__control' key={name}>
             <label className='control__label'>{name}</label>
             {type === 'textarea' ?
                 <textarea
-                    defaultValue={value}
+                    defaultValue={defaultValue}
                     className='control__input control__input_textarea'
                     onChange={(e) => onChange(action, e.currentTarget.value)}
                     placeholder={placeholder}
@@ -56,7 +46,8 @@ const FormControl: FC<FormControlProps> = ({
                 :
                 <input
                     disabled={disabled}
-                    defaultValue={value}
+                    defaultValue={defaultValue}
+                    value={value}
                     className='control__input'
                     onChange={(e) => onChange(action, type === 'file'?
                     e.currentTarget.files : e.currentTarget.value)}

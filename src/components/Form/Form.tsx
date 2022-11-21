@@ -31,6 +31,7 @@ const Form: FC<FormProps> = ({ fields, children, type, onChange, onSubmit }) => 
                     onChange={onChange}
                     name={field.name}
                     type={field.type}
+                    value={field.value}
                     action={field.action}
                     placeholder={field.placeholder}
                     multiple={field.multiple}
